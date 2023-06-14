@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const ctrlTechnology = require('../controller');
+const ctrlTechnology = require('../controllers');
 
-router.get('/tasks', ctrlTechnology.get);
+router.get('', ctrlTechnology.get);
 
-router.get('/tasks/:id', ctrlTechnology.getById);
+router.get('/:id', ctrlTechnology.getById);
 
-router.post('/tasks', ctrlTechnology.create);
+router.post('', ctrlTechnology.create);
 
-router.put('/tasks/:id', ctrlTechnology.update);
+router.put('/:id', ctrlTechnology.update);
 
-router.delete('/tasks/:id', ctrlTechnology.remove);
+router.delete('/:id', ctrlTechnology.remove);
 
 module.exports = router;

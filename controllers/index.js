@@ -6,7 +6,7 @@ const {
     updateOneTechnology,
 } = require('../services/index');
 
-const getTechnologies = async (req, res, next) => {
+const get = async (req, res, next) => {
     const technologies = await getAllTechnologies();
     res.status(201).json({
         contentType: 'application/json',
@@ -14,7 +14,7 @@ const getTechnologies = async (req, res, next) => {
     });
 };
 
-const getTechnology = async (req, res, next) => {
+const getById = async (req, res, next) => {
     const technology = await getTechnologyById(req.params.name);
     res.status(201).json({
         contentType: 'application/json',
@@ -22,7 +22,7 @@ const getTechnology = async (req, res, next) => {
     });
 };
 
-const addTechnology = async (req, res, next) => {
+const create = async (req, res, next) => {
     const newTechnology = await createTechnology(req.body);
     res.status(201).json({
         contentType: 'application/json',
@@ -30,7 +30,7 @@ const addTechnology = async (req, res, next) => {
     });
 };
 
-const updateTechnology = async (req, res, next) => {
+const update = async (req, res, next) => {
     const updatedTechnology = await updateOneTechnology(
         req.params.technologyId,
         req.body
@@ -43,7 +43,7 @@ const updateTechnology = async (req, res, next) => {
           });
 };
 
-const deleteTechnology = async (req, res, next) => {
+const remove = async (req, res, next) => {
     const technologies = await removeTechnology(req.params.technologyId);
     !technologies
         ? res.status(404).json({ message: 'Technology not found' })
@@ -51,9 +51,9 @@ const deleteTechnology = async (req, res, next) => {
 };
 
 module.exports = {
-    getTechnologies,
-    getTechnology,
-    addTechnology,
-    updateTechnology,
-    deleteTechnology,
+    get,
+    getById,
+    create,
+    update,
+    remove,
 };
