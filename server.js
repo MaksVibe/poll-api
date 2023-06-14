@@ -35,4 +35,14 @@ const PORT = process.env.PORT || 3001;
 const uriDb = process.env.MONGODB_URL;
 
 mongoose.Promise = global.Promise;
-mongoose.createConnection(uriDb);
+const connection = mongoose.connect(uriDb);
+
+connection
+    .then(() => {
+        app.listen(PORT, function () {
+            console.log(`Server running. Use our API on port: ${PORT}`);
+        });
+    })
+    .catch(err =>
+        console.log(`Server not running. Error message: ${err.message}`)
+    );
