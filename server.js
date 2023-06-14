@@ -36,9 +36,6 @@ const uriDb = process.env.MONGODB_URL;
 
 const connection = mongoose.connect(uriDb, {
     promiseLibrary: global.Promise,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
 });
 
 connection
