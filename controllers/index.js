@@ -7,11 +7,17 @@ const {
 } = require('../services/index');
 
 const get = async (req, res, next) => {
-    const technologies = await getAllTechnologies();
-    res.status(201).json({
-        contentType: 'application/json',
-        ResponseBody: technologies,
-    });
+    try {
+        const technologies = await getAllTechnologies();
+        res.json({
+            status: 'success',
+            code: 200,
+            data: technologies,
+        });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
 };
 
 const getById = async (req, res, next) => {
