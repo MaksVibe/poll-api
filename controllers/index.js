@@ -1,18 +1,18 @@
 const {
-    getAllTechnologies,
+    getTechnology,
+    postTechnology,
     getTechnologyById,
-    createTechnology,
-    removeTechnology,
-    updateOneTechnology,
+    updateTechnology,
 } = require('../services/index');
 
 const get = async (req, res, next) => {
     try {
-        const technologies = await getAllTechnologies();
+        const technology = await getTechnology(req.url.slice(1));
+
         res.json({
-            status: 'success',
+            status: 'Success',
             code: 200,
-            data: technologies,
+            data: technology,
         });
     } catch (error) {
         console.error(error);
@@ -21,39 +21,85 @@ const get = async (req, res, next) => {
 };
 
 const getById = async (req, res, next) => {
-    const technology = await getTechnologyById(req.params.name);
-    res.status(201).json({
-        contentType: 'application/json',
-        ResponseBody: technology,
-    });
+    const { params, url } = req;
+    try {
+        const technology = await getTechnologyById(url.slice(1), params.id);
+        if (technology) {
+            res.json({
+                status: 'Success',
+                code: 200,
+                data: technology,
+            });
+        } else {
+            res.status(404).json({
+                status: 'Error',
+                code: 404,
+                message: `Not found technology id: ${id}`,
+                data: 'Not Found',
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
 };
 
 const create = async (req, res, next) => {
-    const newTechnology = await createTechnology(req.body);
-    res.status(201).json({
-        contentType: 'application/json',
-        ResponseBody: newTechnology,
-    });
+    try {
+        const technologies = await getTechnology(req.url.slice(1));
+
+        if (
+            technologies.some(
+                tech => tech.name.toLowerCase() === req.body.name.toLowerCase()
+            )
+        ) {
+            res.json({
+                status: 'Bad Request',
+                code: 400,
+                data: `${req.body.name} exists`,
+            });
+            return;
+        }
+
+        await postTechnology(req.url.slice(1), req.body);
+        res.json({
+            status: 'Created',
+            code: 201,
+            data: `${req.body.name} created`,
+        });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
 };
 
 const update = async (req, res, next) => {
-    const updatedTechnology = await updateOneTechnology(
-        req.params.technologyId,
-        req.body
-    );
-    !updatedTechnology
-        ? res.status(404).json({ message: "Couldn't update technology" })
-        : res.status(201).json({
-              contentType: 'application/json',
-              ResponseBody: updatedTechnology,
-          });
-};
-
-const remove = async (req, res, next) => {
-    const technologies = await removeTechnology(req.params.technologyId);
-    !technologies
-        ? res.status(404).json({ message: 'Technology not found' })
-        : res.status(200).json({ message: 'Сontact deleted' });
+    const { id } = req.params;
+    const { spec, data } = req.body;
+    try {
+        const technology = await updateTechnology(spec, id, {
+            id: data.id,
+            name: data.name,
+            amount: data.amount + 1,
+        });
+        if (technology) {
+            res.json({
+                status: 'success',
+                code: 200,
+                data: technology,
+            });
+        } else {
+            res.status(404).json({
+                status: 'error',
+                code: 404,
+                message: `Not found technology with id: ${req.params.id}`,
+                data: 'Not Found',
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
 };
 
 module.exports = {
@@ -61,5 +107,4 @@ module.exports = {
     getById,
     create,
     update,
-    remove,
 };
