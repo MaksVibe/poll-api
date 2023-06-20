@@ -1,22 +1,34 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-
+const routerApi = require('./routes');
 require('dotenv').config();
 
+const PORT = process.env.PORT || 3001;
+const uriDb = process.env.MONGODB_URL;
 const app = express();
 // parse application/json
 app.use(express.json());
 // cors
 app.use(cors());
-const routerApi = require('./api');
-app.use('/api', routerApi);
+
+mongoose.connect(uriDb);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Database connection error: '));
+db.once('open', function () {
+    console.log('Database connected successfully');
+});
+
+app.use('/', routerApi);
+app.listen(PORT, function () {
+    console.log(`Server is running at port ${PORT}`);
+});
 
 app.use((_, res, __) => {
     res.status(404).json({
         status: 'error',
         code: 404,
-        message: 'Use api on routes: /api/tasks',
+        message: 'Use api on routes: /',
         data: 'Not found',
     });
 });
@@ -30,19 +42,3 @@ app.use((err, _, res, __) => {
         data: 'Internal Server Error',
     });
 });
-
-const PORT = process.env.PORT || 3001;
-const uriDb = process.env.MONGODB_URL;
-
-mongoose.Promise = global.Promise;
-const connection = mongoose.connect(uriDb);
-
-connection
-    .then(() => {
-        app.listen(PORT, function () {
-            console.log(`Server running. Use our API on port: ${PORT}`);
-        });
-    })
-    .catch(err =>
-        console.log(`Server not running. Error message: ${err.message}`)
-    );
