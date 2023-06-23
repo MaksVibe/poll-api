@@ -3,7 +3,7 @@ const {
     postTechnology,
     getTechnologyById,
     updateTechnology,
-} = require('../services/index');
+} = require('../services/index.js');
 
 const get = async (req, res, next) => {
     try {

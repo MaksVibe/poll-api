@@ -1,4 +1,10 @@
-const { Frontend, Backend, QA, PM, Design } = require('./schemas/technology');
+const {
+    Frontend,
+    Backend,
+    QA,
+    PM,
+    Design,
+} = require('./schemas/technology.js');
 
 const getTechnology = spec => {
     switch (spec) {

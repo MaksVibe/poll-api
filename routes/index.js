@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { get, create, update, getById } = require('../controllers/index');
-const { catchErrors } = require('../middlewares/catchErrors');
+const { get, create, update, getById } = require('../controllers/index.js');
+const { catchErrors } = require('../middlewares/catchErrors.js');
 
 router.get('/frontend', catchErrors(get));
 router.get('/backend', catchErrors(get));
